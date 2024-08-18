@@ -1,7 +1,33 @@
+from django.shortcuts import render
+from rest_framework import generics
+from rest_framework.views import APIView
+from .models.custom_user import CustomUser
+from django.shortcuts import get_object_or_404
+from .serializers import CustomUserSerializer, LoginSerializer
+import pdb
+
+from rest_framework import status
+from rest_framework.response import Response
+
+# This is used for create and index
+class CustomUserListCreateView(generics.ListCreateAPIView):
+  queryset = CustomUser.objects.all()
+  serializer_class = CustomUserSerializer
+
+  def list(self, request, *args, **kwargs):
+    # pdb.set_trace() #This can be used as byebug
+    response = super(CustomUserListCreateView, self).list(request, *args, **kwargs)
+    # Add additional data to the response
+    response_data = {
+        'message': 'User list fetched successfully',
+        'total_users': len(response.data),
+        'users': response.data
+    }
+    response_data['total_users'] = len(response.data)
+    return Response(response_data)    
 # from django.shortcuts import render
 # from rest_framework import generics
 # from rest_framework.views import APIView
-# from .models.custom_user import CustomUser
 # from django.shortcuts import get_object_or_404
 # from .serializers import CustomUserSerializer, LoginSerializer
 # from rest_framework_simplejwt.tokens import RefreshToken

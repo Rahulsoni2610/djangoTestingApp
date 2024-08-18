@@ -1,7 +1,8 @@
 from rest_framework import serializers
-from .models import User
+from .models.custom_user import CustomUser
 from .models import Location
-import pdb
+from .models.otp import Otp
+from django.contrib.auth.hashers import make_password
 
 class LocationSerializer(serializers.ModelSerializer):
   class Meta:
@@ -9,14 +10,15 @@ class LocationSerializer(serializers.ModelSerializer):
     fields = ['state', 'city']
 
 
-class UserSerializer(serializers.ModelSerializer):
+class CustomUserSerializer(serializers.ModelSerializer):
   location = LocationSerializer(source='location_id')
 
   class Meta:
-    model = User
+    model = CustomUser
     fields = ['id','email', 'password', 'first_name', 'last_name', 'contact_no', 'address_line_1', 'role', 'location']
 
   def create(self, validated_data):
+    validated_data['password'] = make_password(validated_data['password'])
     location_data = validated_data.pop('location_id')
     location, created = Location.objects.get_or_create(**location_data)
     user = User.objects.create(location_id=location, **validated_data)
@@ -39,3 +41,13 @@ class UserSerializer(serializers.ModelSerializer):
     instance.save()
     return instance
 
+class LoginSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = CustomUser
+    fields = ["email", "password"]
+
+class OtpSerializer(serializers.ModelSerializer):
+  class Meta:
+      model = Otp
+      # fields = ['email']
+      fields = '__all__'

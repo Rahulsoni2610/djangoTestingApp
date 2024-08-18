@@ -78,8 +78,8 @@ WSGI_APPLICATION = 'serviceApp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'python_db', #change it databasename
-        'USER': 'python_user', #change it database user name
+        'NAME': 'service_app_db', #change it databasename
+        'USER': 'rahulsoni', #change it database user name
         'PASSWORD': 'password', # change user database password
         'HOST': 'localhost',  
         'PORT': '5432',           

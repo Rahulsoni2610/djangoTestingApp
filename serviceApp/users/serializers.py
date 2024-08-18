@@ -11,7 +11,7 @@ class LocationSerializer(serializers.ModelSerializer):
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
-  location = LocationSerializer(source='location_id')
+  location = LocationSerializer()
 
   class Meta:
     model = CustomUser
@@ -19,9 +19,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
   def create(self, validated_data):
     validated_data['password'] = make_password(validated_data['password'])
-    location_data = validated_data.pop('location_id')
+    location_data = validated_data.pop('location')
     location, created = Location.objects.get_or_create(**location_data)
-    user = CustomUser.objects.create(location_id=location, **validated_data)
+    user = CustomUser.objects.create(location=location, **validated_data)
     return user
 
   def update(self, instance, validated_data):

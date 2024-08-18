@@ -74,20 +74,28 @@ class CustomUserDeleteView(APIView):
 class LoginView(APIView):
   def post(self, request):
     try:
-      data = request.data
-      serializer = LoginSerializer(data=data)
-      if serializer.is_valid():
-        email = serializer.data.get('email')
-        user = CustomUser.objects.get(email=email, password=password)
-        password = check_password(serializer.data.get('password'), user.password)
-        if user is None:
-          return Response({"message": "Invalid credentials"}, status=status.HTTP_404_NOT_FOUND)
-        refresh = RefreshToken.for_user(user)
+        data = request.data
+        serializer = LoginSerializer(data=data)
+        
+        if serializer.is_valid():
+            email = serializer.validated_data.get('email')
+            user = CustomUser.objects.filter(email=email).first()
+            
+            if user is None:
+                return Response({"message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        return {
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        }
-      return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            valid_password = check_password(serializer.validated_data.get('password'), user.password)
+            
+            if valid_password:
+                refresh = RefreshToken.for_user(user)
+                return Response({
+                    'refresh': str(refresh),
+                    'access': str(refresh.access_token),
+                })
+            else:
+                return Response({"message": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     except Exception as e:
-      return Response({"message": e.args}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({"message": "An error occurred. Please try again."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -129,12 +129,3 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
-
-
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_HOST = 'XXXXXXXXXXXXXXXXXX'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'XXXXXXXXXXXXXXXXXX'
-EMAIL_HOST_PASSWORD = 'XXXXXXXXXXXXXXXXXX'
-DEFAULT_FROM_EMAIL = 'XXXXXXXXXXXXXXXXXX'

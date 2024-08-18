@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models.custom_user import CustomUser
-from .models import Location
+from .models.custom_user import Location
 from .models.otp import Otp
 from django.contrib.auth.hashers import make_password
 
@@ -15,13 +15,13 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = CustomUser
-    fields = ['id','email', 'password', 'first_name', 'last_name', 'contact_no', 'address_line_1', 'role', 'location']
+    fields = ['id','email', 'password', 'first_name', 'last_name', 'contact_no', 'address', 'role', 'location']
 
   def create(self, validated_data):
     validated_data['password'] = make_password(validated_data['password'])
     location_data = validated_data.pop('location_id')
     location, created = Location.objects.get_or_create(**location_data)
-    user = User.objects.create(location_id=location, **validated_data)
+    user = CustomUser.objects.create(location_id=location, **validated_data)
     return user
 
   def update(self, instance, validated_data):
@@ -35,7 +35,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     instance.first_name = validated_data.get('first_name', instance.first_name)
     instance.last_name = validated_data.get('last_name', instance.last_name)
     instance.contact_no = validated_data.get('contact_no', instance.contact_no)
-    instance.address_line_1 = validated_data.get('address_line_1', instance.address_line_1)
+    instance.address_line_1 = validated_data.get('address', instance.address_line_1)
     instance.role = validated_data.get('role', instance.role)
 
     instance.save()

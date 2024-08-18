@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from .models import User
 from django.shortcuts import get_object_or_404
 from .serializers import UserSerializer
+from .serializers import LocationSerializer
 import pdb
 
 from rest_framework import status
@@ -16,14 +17,14 @@ class UserListCreateView(generics.ListCreateAPIView):
 
   def list(self, request, *args, **kwargs):
     # pdb.set_trace() #This can be used as byebug
-    response = super().list(request, *args, **kwargs)
+    response = super(UserListCreateView, self).list(request, *args, **kwargs)
     # Add additional data to the response
     response_data = {
         'message': 'User list fetched successfully',
         'total_users': len(response.data),
         'users': response.data
     }
-    response.data['total_users'] = len(response.data['results'])
+    response_data['total_users'] = len(response.data)
     return Response(response_data)    
     
 # This can be used for update, show, delete

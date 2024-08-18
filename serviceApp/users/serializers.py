@@ -40,7 +40,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
     instance.save()
     return instance
 
-class LoginSerializer(serializers.ModelSerializer):
+class LoginSerializer(serializers.Serializer):
+  email = serializers.EmailField()
+  password = serializers.CharField()
   class Meta:
     model = CustomUser
     fields = ["email", "password"]

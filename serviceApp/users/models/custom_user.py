@@ -6,7 +6,7 @@ class Location(models.Model):
 
 class CustomUser(models.Model):
   email = models.EmailField(unique=True)
-  password = models.CharField(max_length=20)
+  password = models.CharField(max_length=128)
   first_name = models.CharField(max_length=25)
   last_name = models.CharField(max_length=25)
   location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True)
